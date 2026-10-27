@@ -6,37 +6,71 @@ Repository-ul conține sursele, scripturile Linux de compilare și instalare, su
 
 **Nexus rulează în procesul Windows al GW2 prin Proton.** Din acest motiv, compilarea pe Fedora produce un DLL Windows x64. Acest DLL este necesar pentru funcționare, dar este generat local și ignorat de Git; nu este inclus în repository. Nu există instalator sau procedură de instalare pentru Windows în acest proiect.
 
-## Cerințe
+## Instalare ușoară pe Fedora
 
-- Fedora Linux cu Steam, Guild Wars 2 și Proton configurate.
-- Nexus deja instalat în directorul GW2.
-- Python 3 și Bash.
-- Zig 0.14.1 în `PATH`, sau locația sa în variabila `ZIG`.
-
-## Compilare și instalare
-
-Închide GW2 înainte de instalare.
+Ai nevoie de Fedora **x86_64**, Steam, Guild Wars 2 și Nexus deja funcționale prin Proton. Închide GW2 înainte de instalare. Rulează comenzile următoare într-un terminal:
 
 ```bash
+sudo dnf install git python3 curl tar xz coreutils
 git clone https://github.com/insightfulrival/inquest-chipset-fedora.git
 cd inquest-chipset-fedora
-./build.sh
-python3 install.py
+./setup-fedora.sh
 ```
 
-Pentru Zig într-un alt director:
+Doar instalarea pachetelor Fedora folosește `sudo`. Rulează scripturile proiectului ca utilizatorul tău obișnuit.
+
+`setup-fedora.sh` descarcă automat **Zig 0.14.1 pentru Linux** în `.tools/` dacă nu găsește această versiune în `PATH`, verifică arhiva cu SHA-256 publicat în [indexul oficial Zig](https://ziglang.org/download/index.json), compilează addonul și pornește instalatorul. Nu schimbă toolchain-ul sistemului. Prima compilare poate dura câteva minute; progresul descărcării apare în terminal.
+
+Locația implicită a jocului este `~/.local/share/Steam/steamapps/common/Guild Wars 2`. Dacă ai altă bibliotecă Steam, indică directorul care conține `Gw2-64.exe` și `d3d11.dll`:
 
 ```bash
-ZIG=/cale/catre/zig ./build.sh
+./setup-fedora.sh --game "/cale/catre/steamapps/common/Guild Wars 2"
 ```
 
-Instalatorul folosește implicit `~/.local/share/Steam/steamapps/common/Guild Wars 2`. Pentru altă bibliotecă Steam, inclusiv Steam Flatpak:
+Pentru Steam Flatpak cu biblioteca implicită:
 
 ```bash
-python3 install.py --game "/cale/catre/steamapps/common/Guild Wars 2"
+./setup-fedora.sh --game "$HOME/.var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/common/Guild Wars 2"
 ```
 
-Instalatorul copiază `dist/InquestChipset.dll` și sunetul în `addons`, păstrează o copie a configurației Nexus și activează încărcarea automată. La următoarea pornire a GW2, addonul va fi încărcat. Clicurile se activează manual.
+Instalatorul copiază DLL-ul și sunetul în `addons`, salvează o copie a configurației Nexus și activează încărcarea automată. La următoarea pornire a GW2, addonul va fi încărcat. Clicurile se activează manual.
+
+### Verificare în joc
+
+1. Pornește GW2 prin Steam, cu Proton și Nexus ca înainte.
+2. Deschide Nexus și verifică dacă **Inquest Chipset** apare activ în lista de addons.
+3. Apasă `Ctrl+Shift+I` pentru fereastra de setări.
+4. Schimbă scurtăturile din **Nexus → Keybinds**, dacă ai conflicte sau alt aranjament de tastatură.
+
+### Compilare separată și actualizare
+
+Pentru a compila fără să instalezi în joc:
+
+```bash
+./setup-fedora.sh --build-only
+```
+
+Dacă ai deja Zig 0.14.1 într-o altă locație:
+
+```bash
+ZIG=/cale/catre/zig ./setup-fedora.sh
+```
+
+Pentru actualizare, închide GW2, apoi rulează din directorul proiectului:
+
+```bash
+git pull --ff-only
+./setup-fedora.sh
+```
+
+Adaugă din nou `--game "/cale/catre/Guild Wars 2"` dacă jocul este în altă locație. Pentru instalarea ulterioară a unui DLL deja compilat poți folosi și `python3 install.py --game "/cale/catre/Guild Wars 2"`.
+
+### Dacă instalarea se oprește
+
+- **„Close GW2”**: închide complet jocul și reia comanda; scriptul nu editează configurația când jocul rulează.
+- **„Nexus installation was not found”**: verifică directorul `--game`; trebuie să conțină `d3d11.dll` și `addons/Nexus/AddonConfig.json`. Pornește o dată jocul cu Nexus dacă fișierul de configurație nu există încă, apoi închide-l.
+- **Descărcare sau verificare SHA-256 eșuată**: verifică internetul și reia scriptul; compilarea nu continuă cu o arhivă neverificată.
+- **Addonul nu apare în joc**: verifică `addons/Nexus/Nexus.log` pentru mesaje legate de `InquestChipset.dll`.
 
 ## Utilizare
 
