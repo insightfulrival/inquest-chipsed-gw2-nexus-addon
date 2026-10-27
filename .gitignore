@@ -1,0 +1,29 @@
+# Generated Nexus/Proton binaries and build caches
+/dist/
+/.zig-cache/
+/zig-cache/
+/zig-out/
+*.dll
+*.dll.a
+*.exe
+*.pdb
+*.obj
+*.o
+*.lib
+*.exp
+*.ilk
+*.sln
+*.vcxproj*
+*.csproj*
+*.dll.config
+
+# Local settings, backups and analysis artifacts
+*.ini
+*.bak
+*.log
+__pycache__/
+*.pyc
+/analysis/
+/ref/
+/PocketUtilities*
+/wine*-prefix/
