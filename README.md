@@ -1,14 +1,14 @@
 # Inquest Chipsed GW2 Addon — Fedora / Linux
 
-Portare locală a utilitarelor Inquest Chipset pentru **Guild Wars 2 + Nexus prin Steam/Proton pe Fedora Linux**.
+A port of the Inquest Chipset utilities for **Guild Wars 2 + Nexus through Steam/Proton on Fedora Linux**.
 
-Repository-ul conține sursele, scripturile Linux de compilare și instalare, sunetul folosit de addon și dependențele necesare. Fișierele originale Blish HUD (`PocketUtilities.dll`, PDB, configurații .NET), proiectele Visual Studio, executabilele și datele personale de test sunt excluse.
+This repository contains the source code, Linux build and installation scripts, the addon's click sound, and the required dependencies. Original Blish HUD binaries (`PocketUtilities.dll`, PDB files, and .NET configuration), Visual Studio projects, executables, and personal test data are excluded.
 
-**Nexus rulează în procesul Windows al GW2 prin Proton.** Din acest motiv, compilarea pe Fedora produce un DLL Windows x64. Acest DLL este necesar pentru funcționare, dar este generat local și ignorat de Git; nu este inclus în repository. Nu există instalator sau procedură de instalare pentru Windows în acest proiect.
+**Nexus runs inside GW2's Windows process through Proton.** Building on Fedora therefore produces a Windows x64 DLL. This DLL is required at runtime, but it is generated locally and ignored by Git. This project provides a Linux installation workflow.
 
-## Instalare ușoară pe Fedora
+## Easy installation on Fedora
 
-Ai nevoie de Fedora **x86_64**, Steam, Guild Wars 2 și Nexus deja funcționale prin Proton. Închide GW2 înainte de instalare. Rulează comenzile următoare într-un terminal:
+You need **x86_64 Fedora**, Steam, Guild Wars 2, and Nexus already working through Proton. Close GW2 before installing. Run these commands in a terminal:
 
 ```bash
 sudo dnf install git python3 curl tar xz coreutils
@@ -17,91 +17,91 @@ cd inquest-chipsed-gw2-addon
 ./setup-fedora.sh
 ```
 
-Doar instalarea pachetelor Fedora folosește `sudo`. Rulează scripturile proiectului ca utilizatorul tău obișnuit.
+Only the Fedora package installation uses `sudo`. Run the project scripts as your regular user.
 
-`setup-fedora.sh` descarcă automat **Zig 0.14.1 pentru Linux** în `.tools/` dacă nu găsește această versiune în `PATH`, verifică arhiva cu SHA-256 publicat în [indexul oficial Zig](https://ziglang.org/download/index.json), compilează addonul și pornește instalatorul. Nu schimbă toolchain-ul sistemului. Prima compilare poate dura câteva minute; progresul descărcării apare în terminal.
+`setup-fedora.sh` automatically downloads **Zig 0.14.1 for Linux** into `.tools/` if that version is unavailable on `PATH`, checks the archive against the SHA-256 published in the [official Zig download index](https://ziglang.org/download/index.json), builds the addon, and runs the installer. It leaves your system toolchain unchanged. The first build may take a few minutes; download progress appears in the terminal.
 
-Locația implicită a jocului este `~/.local/share/Steam/steamapps/common/Guild Wars 2`. Dacă ai altă bibliotecă Steam, indică directorul care conține `Gw2-64.exe` și `d3d11.dll`:
+The default game location is `~/.local/share/Steam/steamapps/common/Guild Wars 2`. For another Steam library, specify the directory containing `Gw2-64.exe` and `d3d11.dll`:
 
 ```bash
-./setup-fedora.sh --game "/cale/catre/steamapps/common/Guild Wars 2"
+./setup-fedora.sh --game "/path/to/steamapps/common/Guild Wars 2"
 ```
 
-Pentru Steam Flatpak cu biblioteca implicită:
+For Steam Flatpak with its default library:
 
 ```bash
 ./setup-fedora.sh --game "$HOME/.var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/common/Guild Wars 2"
 ```
 
-Instalatorul copiază DLL-ul și sunetul în `addons`, salvează o copie a configurației Nexus și activează încărcarea automată. La următoarea pornire a GW2, addonul va fi încărcat. Clicurile se activează manual.
+The installer copies the DLL and sound into `addons`, backs up the Nexus configuration, and enables automatic loading. The addon will load the next time you start GW2. Clicking must be activated manually.
 
-### Verificare în joc
+### Check the addon in game
 
-1. Pornește GW2 prin Steam, cu Proton și Nexus ca înainte.
-2. Deschide Nexus și verifică dacă **Inquest Chipset** apare activ în lista de addons.
-3. Apasă `Ctrl+Shift+I` pentru fereastra de setări.
-4. Schimbă scurtăturile din **Nexus → Keybinds**, dacă ai conflicte sau alt aranjament de tastatură.
+1. Start GW2 through Steam using your existing Proton and Nexus setup.
+2. Open Nexus and check that **Inquest Chipset** is enabled in the addon list.
+3. Press `Ctrl+Shift+I` to open the settings window.
+4. Change shortcuts under **Nexus → Keybinds** if you have conflicts or use a different keyboard layout.
 
-### Compilare separată și actualizare
+### Build separately and update
 
-Pentru a compila fără să instalezi în joc:
+To build without installing into the game:
 
 ```bash
 ./setup-fedora.sh --build-only
 ```
 
-Dacă ai deja Zig 0.14.1 într-o altă locație:
+If Zig 0.14.1 is already installed elsewhere:
 
 ```bash
-ZIG=/cale/catre/zig ./setup-fedora.sh
+ZIG=/path/to/zig ./setup-fedora.sh
 ```
 
-Pentru actualizare, închide GW2, apoi rulează din directorul proiectului:
+To update, close GW2 and run these commands from the project directory:
 
 ```bash
 git pull --ff-only
 ./setup-fedora.sh
 ```
 
-Adaugă din nou `--game "/cale/catre/Guild Wars 2"` dacă jocul este în altă locație. Pentru instalarea ulterioară a unui DLL deja compilat poți folosi și `python3 install.py --game "/cale/catre/Guild Wars 2"`.
+Add `--game "/path/to/Guild Wars 2"` again if your game is installed elsewhere. To install an existing build later, you can also run `python3 install.py --game "/path/to/Guild Wars 2"`.
 
-### Dacă instalarea se oprește
+### Troubleshooting installation
 
-- **„Close GW2”**: închide complet jocul și reia comanda; scriptul nu editează configurația când jocul rulează.
-- **„Nexus installation was not found”**: verifică directorul `--game`; trebuie să conțină `d3d11.dll` și `addons/Nexus/AddonConfig.json`. Pornește o dată jocul cu Nexus dacă fișierul de configurație nu există încă, apoi închide-l.
-- **Descărcare sau verificare SHA-256 eșuată**: verifică internetul și reia scriptul; compilarea nu continuă cu o arhivă neverificată.
-- **Addonul nu apare în joc**: verifică `addons/Nexus/Nexus.log` pentru mesaje legate de `InquestChipset.dll`.
+- **“Close GW2”**: fully exit the game and run the command again. The installer does not edit the configuration while GW2 is running.
+- **“Nexus installation was not found”**: check the `--game` directory. It must contain `d3d11.dll` and `addons/Nexus/AddonConfig.json`. If the configuration file does not exist yet, launch the game with Nexus once, then close it.
+- **Download or SHA-256 verification failed**: check your connection and run the script again. The build will not proceed with an unverified archive.
+- **The addon does not appear in game**: check `addons/Nexus/Nexus.log` for messages about `InquestChipset.dll`.
 
-## Utilizare
+## Usage
 
-| Scurtătură implicită | Acțiune |
+| Default shortcut | Action |
 | --- | --- |
-| `,` ținut apăsat | Dublu clic repetat la cursor, la 50 ms |
-| `[` | Dialog pentru intervalul de 0,25–300 secunde; repetare la poziția aleasă; apăsarea din nou oprește |
+| Hold `,` | Repeat double clicks at the cursor every 50 ms |
+| `[` | Choose an interval of 0.25–300 seconds and repeat clicks at the selected position; press again to stop |
 | `Ctrl+Space` | Dodge-jump |
-| `Ctrl+Shift+I` | Setările addonului |
+| `Ctrl+Shift+I` | Open addon settings |
 
-Schimbă scurtăturile în **Nexus → Keybinds**: `INQUEST_HOLD`, `INQUEST_TOGGLE`, `INQUEST_DODGEJUMP`, `INQUEST_SETTINGS`. Pe alte aranjamente de tastatură simbolul tastei `[` poate fi diferit. Setările apar și în opțiunile addonului din Nexus.
+Change shortcuts under **Nexus → Keybinds**: `INQUEST_HOLD`, `INQUEST_TOGGLE`, `INQUEST_DODGEJUMP`, and `INQUEST_SETTINGS`. The key labeled `[` may have a different label on your keyboard layout. Settings are also available in the addon's Nexus options.
 
-Dodge-jump folosește legăturile jocului cunoscute de Nexus, cu fallback implicit la `V` / `Space`. În setări poți dezactiva „Use Nexus game bindings” și schimba codurile tastelor fallback.
+Dodge-jump uses the game's bindings known to Nexus, falling back to `V` / `Space` by default. You can disable “Use Nexus game bindings” in settings and change the fallback key codes.
 
-Clicurile se opresc în combat și la ieșirea din gameplay. Chatul, harta, mișcarea camerei, tastele modificatoare și pierderea focusului suspendă inputul. Modul periodic păstrează timpul rămas la pauză. Dodge-jump este blocat pe mount, în chat și pe hartă. „Stop all clicking” oprește clicurile.
+Clicking stops when entering combat or leaving gameplay. Chat, the map, camera movement, modifier keys, and loss of game focus suspend input. Interval mode preserves its remaining time while paused. Dodge-jump is blocked while mounted, in chat, or on the map. Use “Stop all clicking” to stop clicking.
 
-Setările sunt salvate în `addons/InquestChipset/settings.ini`. Pentru dezactivare, oprește addonul din Nexus. Pentru dezinstalare, închide GW2 și șterge numai `addons/InquestChipset.dll`; setările pot fi păstrate.
+Settings are saved in `addons/InquestChipset/settings.ini`. To disable the addon, turn it off in Nexus. To uninstall, close GW2 and remove `addons/InquestChipset.dll`; you can keep the settings folder.
 
-## Validare și limite
+## Validation and limitations
 
-Compilare verificată pe Fedora cu Zig 0.14.1. DLL-ul a trecut un test de încărcare cu Wine 11 din Proton Experimental: exportul `GetAddonDef`, API Nexus v6, interfața, cele patru scurtături, blocarea inputului în afara gameplay-ului și descărcarea/reîncărcarea. Acesta este un test izolat; clicurile și dodge-jump nu au fost încă verificate pe un personaj în GW2.
+The build was verified on Fedora with Zig 0.14.1. The DLL passed a loading test using Wine 11 from Proton Experimental, covering the `GetAddonDef` export, Nexus API v6, the interface, all four shortcuts, input blocking outside gameplay, and unloading/reloading. This was an isolated test; clicking and dodge-jump have not yet been verified on a character in GW2.
 
-Interfața este refăcută cu ImGui. Este folosit un sunet original cu volum configurabil, în locul alegerii aleatoare dintre trei sunete.
+The interface was rebuilt with ImGui. The port uses one original sound sample with configurable volume, rather than randomly choosing between three samples.
 
-## Proveniență
+## Credits and provenance
 
-Portare neoficială. Autorul modulului original: **Nekres**.
+This is an unofficial port. The original module was created by **Nekres**.
 
-- [Modulul Blish original](https://github.com/agaertner/bhm-pocket-utilities), sursă consultată la commit `cf8f2306d7996ac242cd1aef7a5fd99444607137`.
-- [Nexus API](https://github.com/RaidcoreGG/Nexus-API), commit `9b2c53df86c00db6495642bfcff2d0611bd957ef`; licență în `vendor/Nexus.LICENSE`.
-- [Mumble API](https://github.com/RaidcoreGG/RCGG-lib-mumble-api), commit `8c93788c3042dd6b401c0a93d17e34e1d4414e9a`; licență în `vendor/Mumble.LICENSE`.
-- [ImGui Nexus 1.80](https://github.com/RaidcoreGG/imgui), commit `58075c4414b985b352d10718b02a8c43f25efd7c`; licență în `vendor/imgui/LICENSE.txt`.
+- [Original Blish module](https://github.com/agaertner/bhm-pocket-utilities), reference source at commit `cf8f2306d7996ac242cd1aef7a5fd99444607137`.
+- [Nexus API](https://github.com/RaidcoreGG/Nexus-API), commit `9b2c53df86c00db6495642bfcff2d0611bd957ef`; license in `vendor/Nexus.LICENSE`.
+- [Mumble API](https://github.com/RaidcoreGG/RCGG-lib-mumble-api), commit `8c93788c3042dd6b401c0a93d17e34e1d4414e9a`; license in `vendor/Mumble.LICENSE`.
+- [ImGui Nexus 1.80](https://github.com/RaidcoreGG/imgui), commit `58075c4414b985b352d10718b02a8c43f25efd7c`; license in `vendor/imgui/LICENSE.txt`.
 
-DLL-ul Blish a fost inspectat static cu REA 6.7.0. SHA-256 original: `f93ce0399c13f647c43fc1a51e5b92f5790b96f9e6ed932741fbab94594a805b`. Este .NET Framework 4.7.2 / AnyCPU, dependent de Blish HUD; integrarea a fost rescrisă pentru Nexus API v6. Fișierul original și rapoartele locale nu sunt publicate aici.
+The Blish DLL was inspected statically using REA 6.7.0. Original SHA-256: `f93ce0399c13f647c43fc1a51e5b92f5790b96f9e6ed932741fbab94594a805b`. It targets .NET Framework 4.7.2 / AnyCPU and depends on Blish HUD; the integration was rewritten for Nexus API v6. The original binary and local analysis reports are not included here.
