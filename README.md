@@ -103,5 +103,3 @@ This is an unofficial port. The original module was created by **Nekres**.
 - [Nexus API](https://github.com/RaidcoreGG/Nexus-API), commit `9b2c53df86c00db6495642bfcff2d0611bd957ef`; license in `vendor/Nexus.LICENSE`.
 - [Mumble API](https://github.com/RaidcoreGG/RCGG-lib-mumble-api), commit `8c93788c3042dd6b401c0a93d17e34e1d4414e9a`; license in `vendor/Mumble.LICENSE`.
 - [ImGui Nexus 1.80](https://github.com/RaidcoreGG/imgui), commit `58075c4414b985b352d10718b02a8c43f25efd7c`; license in `vendor/imgui/LICENSE.txt`.
-
-The Blish DLL was inspected statically using REA 6.7.0. Original SHA-256: `f93ce0399c13f647c43fc1a51e5b92f5790b96f9e6ed932741fbab94594a805b`. It targets .NET Framework 4.7.2 / AnyCPU and depends on Blish HUD; the integration was rewritten for Nexus API v6. The original binary and local analysis reports are not included here.
