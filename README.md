@@ -4,9 +4,33 @@ A port of the Inquest Chipset utilities for **Guild Wars 2 + Nexus through Steam
 
 This repository contains the source code, Linux build and installation scripts, the addon's click sound, and the required dependencies. Original Blish HUD binaries (`PocketUtilities.dll`, PDB files, and .NET configuration), Visual Studio projects, executables, and personal test data are excluded.
 
-**Nexus runs inside GW2's Windows process through Proton.** Building on Fedora therefore produces a Windows x64 DLL. This DLL is required at runtime, but it is generated locally and ignored by Git. This project provides a Linux installation workflow.
+**Nexus runs inside GW2's Windows process through Proton.** Building on Fedora therefore produces a Windows x64 DLL. This DLL is required at runtime. Prebuilt DLLs are available under Releases; generated binaries remain ignored by Git. This project provides a Linux installation workflow.
 
-## Easy installation on Fedora
+## Install the prebuilt release (no compiler required)
+
+You need Nexus already working with GW2 through Steam/Proton. **Close GW2 before installing.**
+
+1. Open [Releases](https://github.com/insightfulrival/inquest-chipsed-gw2-nexus-addon/releases/latest).
+2. Download `inquest-chipset-nexus-fedora-0.5.0.1.zip` and extract it.
+3. Open a terminal in the extracted folder and run:
+
+```bash
+python3 install.py
+```
+
+For a custom Steam library or Steam Flatpak, pass the game directory:
+
+```bash
+python3 install.py --game "/path/to/steamapps/common/Guild Wars 2"
+```
+
+The ZIP includes the compiled DLL, click sound, and Linux installer. The installer backs up the Nexus configuration and any existing DLL, then enables automatic loading. Start GW2 and press `Ctrl+Shift+I` to open the addon settings.
+
+You can also download **`InquestChipset.dll` directly**, close GW2, and copy it into your game's `addons/` folder. Start GW2 and enable **Inquest Chipset** in Nexus if needed. For click sounds, also copy `assets/double-click.wav` from the ZIP into `addons/InquestChipset/double-click.wav`. Existing settings can be kept. The ZIP installer handles both files for you.
+
+The release includes `SHA256SUMS` and `BUILD-INFO.json` for file verification and build provenance. No Zig installation is needed for a prebuilt release.
+
+## Build and install from source on Fedora
 
 You need **x86_64 Fedora**, Steam, Guild Wars 2, and Nexus already working through Proton. Close GW2 before installing. Run these commands in a terminal:
 
