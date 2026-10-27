@@ -1,10 +1,18 @@
-# Inquest Chipsed GW2 Nexus Addon — Fedora / Linux
+# Inquest Chipset GW2 Nexus Addon — Linux
 
-A port of the Inquest Chipset utilities for **Guild Wars 2 + Nexus through Steam/Proton on Fedora Linux**.
+A port of the Inquest Chipset utilities for **Guild Wars 2 + Nexus through Wine/Proton on Linux**.
 
 This repository contains the source code, Linux build and installation scripts, the addon's click sound, and the required dependencies. Original Blish HUD binaries (`PocketUtilities.dll`, PDB files, and .NET configuration), Visual Studio projects, executables, and personal test data are excluded.
 
-**Nexus runs inside GW2's Windows process through Proton.** Building on Fedora therefore produces a Windows x64 DLL. This DLL is required at runtime. Prebuilt DLLs are available under Releases; generated binaries remain ignored by Git. This project provides a Linux installation workflow.
+**Nexus runs inside GW2's Windows process through Wine/Proton.** Building on Linux therefore produces a Windows x64 DLL. This DLL is required at runtime. Prebuilt DLLs are available under Releases; generated binaries remain ignored by Git. This project provides a Linux installation workflow.
+
+## Linux distribution compatibility
+
+**The same addon DLL is intended to work on any x86_64 Linux distribution where GW2 and Nexus already work through Wine/Proton.** It has no Fedora-specific runtime dependency. Fedora, Ubuntu, Debian, Mint, Arch, openSUSE and gaming distributions use the same DLL; game paths and Wine/Proton configuration may differ.
+
+Tested on Fedora; other distributions have not each been tested individually. The setup script and provided DLL target x86_64 systems; native ARM builds are not provided.
+
+Existing repository URLs and release filenames are kept for compatibility with earlier links. This does not restrict where the DLL can run. `setup-linux.sh` is the general setup command; the previous `setup-fedora.sh` command remains a compatible alias.
 
 ## Install the prebuilt release (no compiler required)
 
@@ -30,31 +38,51 @@ You can also download **`InquestChipset.dll` directly**, close GW2, and copy it 
 
 The release includes `SHA256SUMS` and `BUILD-INFO.json` for file verification and build provenance. No Zig installation is needed for a prebuilt release.
 
-## Build and install from source on Fedora
+## Build and install from source on Linux
 
-You need **x86_64 Fedora**, Steam, Guild Wars 2, and Nexus already working through Proton. Close GW2 before installing. Run these commands in a terminal:
+### Install build prerequisites for your distribution
+
+Use the command for your distribution, then run the clone/setup commands below:
 
 ```bash
-sudo dnf install git python3 curl tar xz coreutils
-git clone https://github.com/insightfulrival/inquest-chipsed-gw2-nexus-addon.git
-cd inquest-chipsed-gw2-nexus-addon
-./setup-fedora.sh
+# Fedora / Nobara and other DNF-based systems
+sudo dnf install git python3 curl tar xz coreutils binutils
+
+# Ubuntu / Debian / Linux Mint / Pop!_OS
+sudo apt update
+sudo apt install git python3 curl tar xz-utils coreutils binutils
+
+# Arch Linux / EndeavourOS / CachyOS
+sudo pacman -Syu --needed git python curl tar xz coreutils binutils
+
+# openSUSE
+sudo zypper install git python3 curl tar xz coreutils binutils
 ```
 
-Only the Fedora package installation uses `sudo`. Run the project scripts as your regular user.
+Run only the command for your distribution. For other package managers, install the equivalent tools: Bash, Git, Python 3, curl, tar, xz, sha256sum, and GNU objdump. Package installation may use `sudo`; project scripts must run as your regular user. On immutable distributions such as SteamOS or Bazzite, prefer the prebuilt DLL; build in a suitable development environment if you need a custom build.
 
-`setup-fedora.sh` automatically downloads **Zig 0.14.1 for Linux** into `.tools/` if that version is unavailable on `PATH`, checks the archive against the SHA-256 published in the [official Zig download index](https://ziglang.org/download/index.json), builds the addon, and runs the installer. It leaves your system toolchain unchanged. The first build may take a few minutes; download progress appears in the terminal.
+You need **x86_64 Linux**, Guild Wars 2, and Nexus already working through Wine/Proton. Close GW2 before installing. Run these commands in a terminal:
+
+```bash
+git clone https://github.com/insightfulrival/inquest-chipsed-gw2-nexus-addon.git
+cd inquest-chipsed-gw2-nexus-addon
+./setup-linux.sh
+```
+
+Run project scripts as your regular user; only package installation uses `sudo`.
+
+`setup-linux.sh` automatically downloads **Zig 0.14.1 for Linux** into `.tools/` if that version is unavailable on `PATH`, checks the archive against the SHA-256 published in the [official Zig download index](https://ziglang.org/download/index.json), builds the addon, and runs the installer. It leaves your system toolchain unchanged. The first build may take a few minutes; download progress appears in the terminal.
 
 The default game location is `~/.local/share/Steam/steamapps/common/Guild Wars 2`. For another Steam library, specify the directory containing `Gw2-64.exe` and `d3d11.dll`:
 
 ```bash
-./setup-fedora.sh --game "/path/to/steamapps/common/Guild Wars 2"
+./setup-linux.sh --game "/path/to/steamapps/common/Guild Wars 2"
 ```
 
 For Steam Flatpak with its default library:
 
 ```bash
-./setup-fedora.sh --game "$HOME/.var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/common/Guild Wars 2"
+./setup-linux.sh --game "$HOME/.var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/common/Guild Wars 2"
 ```
 
 The installer copies the DLL and sound into `addons`, backs up the Nexus configuration, and enables automatic loading. The addon will load the next time you start GW2. Clicking must be activated manually.
@@ -71,20 +99,20 @@ The installer copies the DLL and sound into `addons`, backs up the Nexus configu
 To build without installing into the game:
 
 ```bash
-./setup-fedora.sh --build-only
+./setup-linux.sh --build-only
 ```
 
 If Zig 0.14.1 is already installed elsewhere:
 
 ```bash
-ZIG=/path/to/zig ./setup-fedora.sh
+ZIG=/path/to/zig ./setup-linux.sh
 ```
 
 To update, close GW2 and run these commands from the project directory:
 
 ```bash
 git pull --ff-only
-./setup-fedora.sh
+./setup-linux.sh
 ```
 
 Add `--game "/path/to/Guild Wars 2"` again if your game is installed elsewhere. To install an existing build later, you can also run `python3 install.py --game "/path/to/Guild Wars 2"`.
