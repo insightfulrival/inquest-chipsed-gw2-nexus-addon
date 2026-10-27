@@ -1,4 +1,4 @@
-# Inquest Chipset — Fedora / Linux
+# Inquest Chipsed GW2 Addon — Fedora / Linux
 
 Portare locală a utilitarelor Inquest Chipset pentru **Guild Wars 2 + Nexus prin Steam/Proton pe Fedora Linux**.
 
@@ -12,8 +12,8 @@ Ai nevoie de Fedora **x86_64**, Steam, Guild Wars 2 și Nexus deja funcționale 
 
 ```bash
 sudo dnf install git python3 curl tar xz coreutils
-git clone https://github.com/insightfulrival/inquest-chipset-fedora.git
-cd inquest-chipset-fedora
+git clone https://github.com/insightfulrival/inquest-chipsed-gw2-addon.git
+cd inquest-chipsed-gw2-addon
 ./setup-fedora.sh
 ```
 
